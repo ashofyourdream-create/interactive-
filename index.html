@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Интерактивная Солнечная система</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080e1c;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:24px}
+h1{font-size:clamp(24px,4vw,36px);margin:0 0 8px}
+.sub{color:#a9b8cf;margin:0 0 22px;font-size:14px}
+.panel{background:#101b30;border:1px solid #263954;border-radius:18px;padding:16px;overflow:hidden}
+.planet-row{display:flex;align-items:center;gap:10px;overflow-x:auto;overflow-y:hidden;padding:14px 4px 18px;scrollbar-color:#526783 #17243a;scrollbar-width:thin}
+.planet{flex:0 0 92px;min-height:116px;border:1px solid #34445b;background:#17243a;color:#fff;border-radius:13px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer}
+.planet[aria-pressed=true]{border:2px solid #f3c46b;background:#293e5c}
+.planet:focus-visible{outline:3px solid #f3c46b;outline-offset:3px}
+.sun{flex:0 0 78px;display:flex;flex-direction:column;align-items:center;gap:12px;color:#ffca66;font-size:13px;font-weight:bold}
+.orb{width:var(--s);height:var(--s);border-radius:50%;background:var(--c);border:1px solid #ffffff77;box-shadow:inset -7px -6px 12px #0004,0 0 12px #ffffff16}
+.saturn{width:64px;height:42px;position:relative;display:grid;place-items:center}
+.saturn:before{content:"";position:absolute;width:62px;height:18px;border:7px solid #c2aa7d;border-radius:50%;transform:rotate(-18deg)}
+.saturn:after{content:"";width:29px;height:29px;border-radius:50%;background:#d9c18d;box-shadow:inset -6px -4px 8px #0004}
+.name{font-size:12px;font-weight:bold;white-space:nowrap}
+.hint{font-size:12px;color:#8496b0;text-align:center;margin:2px 0 0}
+.info{margin-top:16px;background:#17243a;border-radius:16px;padding:20px;min-height:150px}
+.info h2{margin:0 0 10px;font-size:24px}
+.info p{color:#e0e8f4;line-height:1.55;margin:8px 0}
+.fact{background:#293c58;border-radius:12px;padding:13px;margin-top:14px}
+.fact strong{display:block;color:#f3c46b;font-size:11px;letter-spacing:.06em;margin-bottom:7px}
+.fact p{margin:0}
+@media(max-width:600px){.wrap{padding:16px}.panel{padding:10px}.planet{flex-basis:82px}.sun{flex-basis:66px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Солнечная система</h1>
+  <p class="sub">Нажми на планету, чтобы узнать о ней больше.</p>
+  <section class="panel" aria-label="Планеты Солнечной системы">
+    <div class="planet-row" id="planets">
+      <div class="sun"><div class="orb" style="--s:58px;--c:#ffad28;border:3px solid #ffe18b"></div><span>Солнце</span></div>
+    </div>
+    <p class="hint">← Прокручивай ряд горизонтально →</p>
+  </section>
+  <section class="info" id="info" aria-live="polite">
+    <h2>Выбери планету</h2>
+    <p>Нажми на одну из восьми планет в горизонтальном ряду.</p>
+  </section>
+</main>
+<script>
+const planets=[
+ ["Меркурий","#aaa49b",27,"Самая маленькая планета, ближайшая к Солнцу.","Год длится 88 земных дней."],
+ ["Венера","#e6b66f",27,"Вторая планета от Солнца.","Самая горячая планета Солнечной системы."],
+ ["Земля","#348dd1",34,"Наш дом, единственная известная планета с жизнью.","71% поверхности покрыто водой."],
+ ["Марс","#d65e3d",29,"Красная планета.","На Марсе находится вулкан Олимп."],
+ ["Юпитер","#d0a477",57,"Самая большая планета.","Большое красное пятно — гигантский вихрь."],
+ ["Сатурн","#d9c18d",55,"Газовый гигант с кольцами.","Кольца состоят из льда и камней."],
+ ["Уран","#83c9d1",39,"Ледяной гигант.","Вращается практически на боку."],
+ ["Нептун","#456bd6",38,"Самая далёкая планета.","Ветры превышают 2 000 км/ч."]
+];
+const row=document.getElementById('planets'), info=document.getElementById('info');
+planets.forEach((p,i)=>{
+ const b=document.createElement('button'); b.className='planet'; b.type='button'; b.setAttribute('aria-pressed','false');
+ const visual=i===5?'<div class="saturn" aria-hidden="true"></div>':`<div class="orb" style="--s:${p[2]}px;--c:${p[1]}" aria-hidden="true"></div>`;
+ b.innerHTML=visual+`<span class="name">${p[0]}</span>`;
+ b.addEventListener('click',()=>{
+  row.querySelectorAll('.planet').forEach(x=>x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');
+  info.innerHTML=`<h2>${p[0]}</h2><p>${p[3]}</p><div class="fact"><strong>ИНТЕРЕСНЫЙ ФАКТ</strong><p>${p[4]}</p></div>`;
+ });
+ row.appendChild(b);
+});
+</script>
+</body>
+</html>
